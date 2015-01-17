@@ -11,7 +11,7 @@ function init()
       url: "https://data.hartford.gov/resource/anj2-ytvy.json?$where=alm_date>'2015-01-01T00:00:00'",
       context: document.body
         }).done(function(data) {
-            parseReturn(data);
+            parseReturn(data.reverse());
         });
     $( document ).ajaxComplete(function() {
         $("#incidentList").listview().listview('refresh');    
