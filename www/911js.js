@@ -11,7 +11,7 @@ function init()
       url: "https://data.hartford.gov/resource/anj2-ytvy.json?$where=alm_date>'2015-01-01T00:00:00'",
       context: document.body
         }).done(function(data) {
-            parseReturn(data);
+            parseReturn(data.reverse());
         });
     $( document ).ajaxComplete(function() {
         $("#incidentList").listview().listview('refresh');    
@@ -63,10 +63,12 @@ function populateIL(alarmDate, description, street, alarmTime, incidentType)
     {
         var out = "";
     }
-    out += "<li><h2>Street: " + street + "</h2>";
-    out += "<h3>" + incident + "</h3>";
-    out += "<p>Time: " + alarmTime + "<br/>";
-    out += "Incident Description: " + description + "</p>";
+    if(street != undefined) out += "<li><h2>Street: " + street + "</h2>";
+    if(incidentType == undefined){ out += "<h3>Incident Type Code: "+incidentType+"</h3>" }
+    else if(incident == undefined){ out += "<h3>No Incident Type Provided</h3>" }
+    else { out += "<h3>" + incident + " (Code "+$.trim(incidentType)+")</h3>" }
+    if(alarmTime != undefined) out += "<p>Time: " + alarmTime + "<br/>";
+    if(description != undefined) out += "Incident Description: " + description + "</p>";
     out += "</li>";
     //console.log(out);
     document.getElementById('incidentList').innerHTML += out;
