@@ -1,4 +1,9 @@
 var oldDate;
+var map;
+var mapArray;
+var mapArrayCounter;
+var mapOpen;
+var listOpen;
 
 window.onload = function () {
     init();   
@@ -7,8 +12,12 @@ window.onload = function () {
 
 function init()
 {
+    mapArrayCounter=0;
+    mapOpen = false;
+    listOpen = false;
+    mapArray = new Array();
     $.ajax({
-      url: "https://data.hartford.gov/resource/anj2-ytvy.json?$where=alm_date>'2015-01-01T00:00:00'",
+      url: "https://data.hartford.gov/resource/anj2-ytvy.json?$where=alm_date>'2015-01-15T00:00:00'",
       context: document.body
         }).done(function(data) {
             parseReturn(data.reverse());
@@ -16,12 +25,19 @@ function init()
     $( document ).ajaxComplete(function() {
         $("#incidentList").listview().listview('refresh');    
     });
-        
+     
 }
 
 function showIncidentList()
 {
-    document.getElementById('listContent').style.display = "block";   
+    if(!listOpen)
+       {
+        document.getElementById('listContent').style.display = "block";   
+     } else
+     {
+        document.getElementById('listContent').style.display = "none";
+     }
+    listOpen = !listOpen;
 }
 
 function parseReturn(data)
@@ -40,8 +56,20 @@ function parseReturn(data)
         x++;
         
         populateIL(dateClean(alarmDate), description, street, alarmTime, incidentType);
+        makeMapArray(lat,long);
     });
+        //console.log(mapArray);
 }
+
+function makeMapArray(lat,long)
+{
+        //console.log(mapArrayCounter);
+        mapArray[mapArrayCounter] = lat;
+        mapArrayCounter++;
+        mapArray[mapArrayCounter] = long;
+        mapArrayCounter++;
+       
+}   
 
 function dateClean(alarmDate)
 {
@@ -73,4 +101,25 @@ function populateIL(alarmDate, description, street, alarmTime, incidentType)
     //console.log(out);
     document.getElementById('incidentList').innerHTML += out;
     oldDate = alarmDate;
+}
+
+function showMap()
+{
+    if(!mapOpen){
+    document.getElementById('mapDiv').style.display = "Block";  
+    map = L.map('map').setView([41.76, -72.67], 13);
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    maxZoom: 18
+}).addTo(map);
+    $(window).resize();
+    for(x=0; x < mapArray.length; x=x+2)
+    {
+           var marker = L.marker([mapArray[x], mapArray[(x+1)]]).addTo(map);
+    }
+    }else
+    {
+        document.getElementById('mapDiv').style.display = "none";   
+    }
+    mapOpen = !mapOpen;
 }

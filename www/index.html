@@ -32,6 +32,8 @@
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="codes.js"></script>
         <script type="text/javascript" src="911js.js"></script>
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
         <title>Hartford 911</title>
         <link href="911Style.css" rel="stylesheet" type="text/css" />
     </head>
@@ -45,17 +47,18 @@
             
             <div data-role="content">
             <button id="btnIncidentList" onclick="showIncidentList()">Hartford 911 Incident List</button>
-            <button>Hartford 911 Incident Map</button>
+            <button onclick="showMap()">Hartford 911 Incident Map</button>
                 <div id="listContent">
                     <ul data-role="listview" data-inset="true" id="incidentList">
                         
                     </ul>
                 </div> <!-- listContent -->
                 <div id="mapDiv">
-                </div>`<!-- mapDiv -->
+                    <div id="map"></div>
+                </div><!-- mapDiv -->
             </div > <!-- content -->
             
-            <div data-role="footer">
+            <div data-role="footer" id="footer">
                 <h4>A Hartford Civic Hackathon Project</h4>
             </div>  <!-- footer -->
             </div> <!-- page -->    
